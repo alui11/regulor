@@ -4,13 +4,18 @@ def eval(pattern, string):
     '''Evaluate a string against a regular expression pattern'''
     pat = cleanPattern(pattern)
     pos = 0
-    for i in range(len(pat)):
+    i = 0
+    for j in range(len(string)):
         if i != len(pat)-1:
             # possibly a positive and a while
-            if not match(pat[i], string[0]) or match(pat[i+1], string[0]):
+            if match(pat[i], string[j]) and match(pat[i+1], string[j]):
+                pass
+            elif match(pat[i],string[j]) and not match(pat[i+1], string[j]):
+                i = i - 1
+            elif not match(pat[i],string[j]) and not match(pat[i+1], string[j]):
                 return False
         else:
-            if not match(pat[i], string[0]):
+            if not match(pat[i], string[j]):
                 return False
     return True
 
@@ -19,9 +24,12 @@ def eval(pattern, string):
 def cleanPattern(pattern):
     '''Clean up a pattern by handling validity and escape codes'''
     cleanpat = []
-    symbols = [x for x in pattern if x != ' ']
+    symbols = [x for x in pattern ]
     for sym in symbols:
         pos = symbols.index(sym)+1
+        if sym == '*' or sym == '+':
+            cleanpat[-1] = cleanpat[-1]+sym
+            continue
         if sym == '\\':
             sym += symbols.pop(pos)
         elif sym == '{':
@@ -30,6 +38,10 @@ def cleanPattern(pattern):
             sym += symbols.pop(pos)
         elif sym == '[':
             while symbols[pos] != ']':
+                sym += symbols.pop(pos)
+            sym += symbols.pop(pos)
+        elif sym == '(':
+            while symbols[pos] != ')':
                 sym += symbols.pop(pos)
             sym += symbols.pop(pos)
         cleanpat.append(sym)
