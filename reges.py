@@ -8,14 +8,14 @@ def eval(pattern, string):
     for j in range(len(string)):
         if i != len(pat)-1:
             # possibly a positive and a while
-            if match(pat[i], string[j]) and match(pat[i+1], string[j]):
+            if match(pat[i+1], j, string):
                 pass
-            elif match(pat[i],string[j]) and not match(pat[i+1], string[j]):
+            elif match(pat[i], j, string) and not match(pat[i+1], j, string):
                 i = i - 1
-            elif not match(pat[i],string[j]) and not match(pat[i+1], string[j]):
+            elif not match(pat[i],j, string) and not match(pat[i+1], j, string):
                 return False
         else:
-            if not match(pat[i], string[j]):
+            if not match(pat[i], j, string):
                 return False
     return True
 
@@ -48,6 +48,37 @@ def cleanPattern(pattern):
     return cleanpat
 
 
-def match(symbol, character):
-    if  '.' in symbol:
+def match(symbol, identifier, string):
+    if '*' in symbol:
         return True
+    elif '+' in symbol:
+        if match(symbol.strip('+'), identifier, string) or match(symbol.string('+'), identifier-1, string):
+            return True
+        else:
+            return False
+    
+    if symbol == '^':
+        if identifier == 0:
+            return True
+        else:
+            return False
+    elif symbol == '$'
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
